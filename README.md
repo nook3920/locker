@@ -1,4 +1,4 @@
-hello
+hello hahaha
 # pwa-locker
 
 ## Project setup
