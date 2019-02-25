@@ -21,7 +21,7 @@
           <v-text-field label="name" v-model="fullName"></v-text-field>
           <v-text-field label="Student ID" v-model="studentId"></v-text-field>
           <v-text-field label="phone" v-model="phone"></v-text-field>
-          <v-btn outline @click="signUp">Submit</v-btn>
+          <v-btn class="green white--text" @click="signUp">Submit</v-btn>
         </v-layout>
       </v-card-text>
     </v-card>

@@ -15,7 +15,7 @@
             <v-avatar>
               <v-icon>account_circle</v-icon>
             </v-avatar>
-            account
+            Account
           </v-chip>
         </v-sheet>
 

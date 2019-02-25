@@ -32,9 +32,9 @@
 export default {
   data () {
     return {
-      name: 'tee',
-      studentId: '1324',
-      tel: '000011111',
+      name: '',
+      studentId: '',
+      tel: '',
       editMode: false
     }
   }
