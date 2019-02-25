@@ -9,7 +9,8 @@ export default new Vuex.Store({
   state: {
     user: null,
     error: null,
-    loading: false
+    loading: false,
+    lock: true
 
   },
   mutations: {
@@ -21,6 +22,9 @@ export default new Vuex.Store({
     },
     setLoading (state, payload) {
       state.loading, payload
+    },
+    SET_LOCK (state, payload) {
+      state.lock = payload
     }
     
   },
@@ -72,6 +76,37 @@ export default new Vuex.Store({
         commit('setUser', null)
         console.log(err)
       })
+    },
+    lockLocker({ commit }){
+      firebase.database().ref('/').set({
+        L1: 1
+      })
+      .then(() => {
+        commit('SET_LOCK', true)
+      })
+      .catch(() => {
+        commit('SET_LOCK', false)
+      })
+    },
+    unlockLocker({ commit }){
+      firebase.database().ref('/').set({
+        L1: 0
+      })
+      .then(() => {
+        commit('SET_LOCK', false)
+      })
+      .catch(() => {
+        commit('SET_LOCK', true)
+      })
+    },
+    getLockerState({ commit }){
+      firebase.database().ref('/L1').once('value')
+      .then(snapshot => {
+        commit('SET_LOCK', snapshot.val())
+      })
+      .catch(err => {
+        console.log(err)
+      })
     }
 
   },
@@ -84,6 +119,9 @@ export default new Vuex.Store({
     },
     getLoading (state) {
       return state.loading
+    },
+    getLock (state) {
+      return state.lock
     }
   }
 })
