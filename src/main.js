@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import Vuetify from 'vuetify'
 import firebase from 'firebase'
+import VeeValidate from 'vee-validate'
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import './registerServiceWorker'
@@ -16,6 +17,7 @@ library.add(faCoffee)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.use(Vuetify)
+Vue.use(VeeValidate)
 firebase.initializeApp(firebaseConfig)
 Vue.config.productionTip = false
 

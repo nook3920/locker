@@ -1,61 +1,71 @@
 <template>
     <v-layout  > 
-      <v-card mx-width="75%" class="mt-4 mx-auto" >
+      <v-card color="grey lighten-3" mx-width="75%" class="mt-4 mx-auto" >
         <!-- <v-sheet elevation="8"> -->
        <p class="display-1 font-weight-black teal--text text-xs-center">เลือกช่องเก็บของ</p>
        <!-- </v-sheet> -->
-       <v-card-actions>
-       <v-layout wrap row d-flex mt-5>
-       <!-- <v-flex xs4 md4 xl4 sm4 lg4 v-for="locker in lockers" :key="locker.id" >
-         <v-btn @click="locker.lock = !locker.lock" large outline v-if="locker.lock"><v-icon>lock</v-icon></v-btn>
-         <v-btn @click="locker.lock = !locker.lock" large round v-else><v-icon>lock_open</v-icon></v-btn>
        
-       </v-flex> -->
-        <v-btn @click="unlockLocker" large outline v-if="lock"><v-icon>lock</v-icon></v-btn>
-        <v-btn @click="lockLocker" large round v-else><v-icon>lock_open</v-icon></v-btn>
+       <v-layout wrap row d-flex mt-5>
+        <v-flex mx-1 xs4 v-for="i in lockers" :key="i.name">
+        <v-btn outline v-if="i.use" disabled><v-icon>lock</v-icon></v-btn>
+        <v-btn @click="selectLocker(i.name)" round v-else>{{i.name}}</v-btn>
+        </v-flex>
        </v-layout>
-       </v-card-actions>
+       
       </v-card>
     </v-layout>
   </template>
 
 <script>
 
-import { mapGetters } from 'vuex'
+import firebase from 'firebase'
+var db = firebase.firestore()
+var auth = firebase.auth()
 export default {
   data () {
     return {
-      lockers: [
-        {id: 1, lock: true},
-        {id: 2, lock: true},
-        {id: 3, lock: true},
-        {id: 4, lock: true},
-        {id: 5, lock: true},
-        {id: 6, lock: true},
-        {id: 7, lock: true},
-        {id: 8, lock: true},
-        {id: 9, lock: true},
-        {id: 10, lock: true},
-        {id: 11, lock: true},
-        {id: 12, lock: true}
-      ]
+      lockers: []
     }
   },
   methods: {
-    lockLocker () {
-      this.$store.dispatch('lockLocker')
+    async getLocker() {
+      try {
+
+        this.lockers = []
+        let docs = await db.collection('Locker').get()
+        docs.forEach(doc => {
+            this.lockers.push({
+              name: doc.id,
+              use: doc.data().use || false
+            })
+        })
+        console.log(auth.currentUser)
+      } catch (err) {
+        console.log(err)
+      }
     },
-    unlockLocker () {
-      this.$store.dispatch('unlockLocker')
+    async selectLocker(name) {
+      auth.onAuthStateChanged(async (uu) => {
+
+        var batch = db.batch()
+        var uid = uu.uid
+        batch.update(db.collection('Locker').doc(name),{use: true, user: uid})
+        batch.update(db.collection('Users').doc(uid), {locker: name})
+
+        try {
+          await batch.commit()  
+          this.$router.push('MainScreen')
+        } catch (err) {
+          console.log(err)
+      }
+      })
     }
   },
   computed: {
-    ...mapGetters({
-      lock: 'getLock'
-    })
+
   },
   created () {
-    this.$store.dispatch('getLockerState')
+    this.getLocker()
   }
 }
 </script>

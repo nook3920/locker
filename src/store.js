@@ -33,8 +33,7 @@ export default new Vuex.Store({
       commit('setLoading', true)
       try {
         let user = await firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
-        commit('setUser', user)
-        console.log(user)
+
         let result = await firebase.firestore().collection('Users').doc(user.user.uid).set({
           fullName: payload.fullName,
           studentId: payload.studentId,
@@ -42,7 +41,7 @@ export default new Vuex.Store({
         })
         commit('setLoading', false)
         console.log('user data added', result)
-        router.push('/otp')
+        router.push('/login')
       } catch (err) {
         commit('setLoading', false)
         console.log(err)
@@ -60,22 +59,42 @@ export default new Vuex.Store({
       })
     },
     async getVerify({ commit }) {
-      console.log('is verify: ' +firebase.auth().currentUser.emailVerified)
+      firebase.auth().currentUser.reload().then(() => {
+        console.log('reload complete')
+        let verify = firebase.auth().currentUser.emailVerified
+        console.log('is verify: ' + verify)
+        if(verify){
+          router.push('/mainscreen')
+        }else{
+          alert('plese go to email')
+        }
+
+      })
     },
     login({ commit }, payload) {
       commit('setLoading', true)
-      firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-      .then( user => {
-        commit('setLoading', true)
-        commit('setUser', user)
+      return new Promise((resolve, reject) => {
+
+        firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
+        .then( user => {
+          commit('setLoading', false)
+        commit('setUser', user.user)
         console.log('logged in')
-        console.log(user)
+        console.log(user.user.emailVerified)
+        if(user.user.emailVerified === true){
+          router.push('/mainscreen')
+        }else{
+          router.push('/otp')
+        }
+        resolve(user)
       })
       .catch(err => {
-        commit('setLoading', true)
+        commit('setLoading', false)
         commit('setUser', null)
         console.log(err)
+        reject(err)
       })
+    })
     },
     lockLocker({ commit }){
       firebase.database().ref('/').set({

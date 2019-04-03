@@ -55,6 +55,21 @@ export default new Router({
       path: '/lcdlogin',
       name: 'Lcdlogin',
       component: () => import('./views/Lcdlogin.vue')
+    },
+    {
+      path: '/admincontrol',
+      name: 'Admincontrol',
+      component: () => import('./views/Admincontrol.vue')
+    },
+    {
+      path: '/selectlock',
+      name: 'Selectlock',
+      component: () => import('./views/Selectlock.vue')
+    },
+    {
+      path: '/entercode',
+      name: 'Entercode',
+      component: () => import('./views/Entercode.vue')
     }
 
   ]
