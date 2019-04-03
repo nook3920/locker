@@ -6,6 +6,7 @@
         elevation="6"
         class="mt-5 mx-auto "
         max-width="360"
+        
       >
         <v-sheet
           class="v-sheet--offset mx-auto"
@@ -17,44 +18,40 @@
             <v-avatar>
               <v-icon color="white">account_circle</v-icon>
             </v-avatar >
-              <h2 class="font-weight-bold white--text ">Account</h2>
+              <h2 class="font-weight-bold white--text ">{{ userName }}</h2>
           </v-chip>
         </v-sheet>
 
-        <v-card-text class="pt-0 text-xs-center title font-weight-bold">
+        
           <v-layout row wrap justify-center>
-            <v-flex xs11 class="ma-1">
-              <v-card color="black" v-if="!selectLock">
-                <v-icon size="50" color="green accent-3" @click="$router.push('SelectLocker')">add_box</v-icon>
-                <h4 class="font-weight-bold white--text " >เลือกช่อง</h4>
-              </v-card>
-              <v-card color="black" v-else>
-                <v-icon size="50" color="red" @click="cancelLocker(selectLock)">indeterminate_check_box</v-icon>
-                <h4 class="font-weight-bold white--text" >เลิกใช้ช่อง</h4>
-              </v-card>
+            <v-flex xs9 class="ma-1">
+              <v-btn round color="green accent-2 black--text" block v-if="!selectLock" large @click="$router.push('SelectLocker')">
+                <h3>เลือกช่อง</h3>
+                <v-icon right color="black" >add_box</v-icon>
+              </v-btn>
+              <v-btn round color="green accent-2 black--text" block v-else large @click="cancelLocker(selectLock)">
+                <h3>เลิกใช้ช่อง</h3>
+                <v-icon right color="black" >indeterminate_check_box</v-icon>
+              </v-btn>
             </v-flex>
-            <v-flex xs11 class="ma-1">
-              <v-card color="black" v-if="lock" >
-                <v-icon size="50" color="green accent-3" :disabled="!selectLock"  @click="toggleUnlock(selectLock)">lock</v-icon>
-                <h4 class="font-weight-bold white--text " >ปลดล็อคช่อง</h4>
-              </v-card>
-              <v-card color="black" v-else >
-                <v-icon size="50" color="red" :disabled="!selectLock" @click="toggleLock(selectLock)">lock_open</v-icon>
-               <h4 class="font-weight-bold white--text " >ล็อคช่อง</h4>
-              </v-card>
-              
+
+            <v-flex xs9 class="ma-1">
+              <v-btn round color="green accent-2 black--text" block v-if="lock" :disabled="!selectLock" large @click="toggleUnlock(selectLock)">
+                <h3>ปลดล็อคช่อง</h3>
+                <v-icon right color="red" >lock</v-icon>
+              </v-btn>
+              <v-btn round color="green accent-2 black--text" block v-else :disabled="!selectLock" large @click="toggleLock(selectLock)">
+                <h3>ล็อคช่อง</h3>
+                <v-icon right color="red" >lock_open</v-icon>
+              </v-btn>              
             </v-flex>
-            
-            <v-flex xs10 class="ma-3">
-              
-                <v-btn large color ="black" class = "font-weight-bold white--text " ><h3>ออกจากระบบ</h3>
-                <v-icon right size="50" @click="logout" color="orange darken-1">exit_to_app</v-icon>
-                <!-- <h4 class="font-weight-bold white--text " >ออกจากระบบ</h4> -->
-                </v-btn>
-              
+            <v-flex xs9 class="ma-1">
+                <v-btn  round class="green  accent-2 black--text" @click="logout"  block large><h3>ออกจากระบบ</h3>
+                <v-icon right color="red " >exit_to_app</v-icon>
+                </v-btn> 
             </v-flex>
           </v-layout>
-        </v-card-text>
+        
       </v-card>
     </v-layout>
 </template>
@@ -63,13 +60,14 @@
 import firebase from 'firebase'
 var db = firebase.firestore()
 var auth = firebase.auth()
-
+//  neorutiontee@gmail.com
 export default {
   data () {
     return {
       selectLock: '',
       lock: true,
-      uid: ''
+      uid: '',
+      userName: ''
     }
   },
   methods: {
@@ -77,8 +75,9 @@ export default {
       auth.onAuthStateChanged(async (uu) => {
       try {
         let user = await db.collection('Users').doc(uu.uid).get()
+        this.userName = user.data().fullName
         this.selectLock = user.data().locker || ''
-        console.log(this.selectLock)
+        // console.log(this.selectLock)
       } catch (err) {
         console.log(err)
       }
@@ -117,9 +116,12 @@ export default {
       }
     },
     async logout(){
-      auth.signOut()
-      this.$router.push('/')
-    }
+      console.log('logout')
+      auth.signOut().then(() => {
+        this.$router.push('/')
+      })
+    },
+   
   },
   created() {
     this.getUser()

@@ -33,7 +33,7 @@ export default new Vuex.Store({
       commit('setLoading', true)
       try {
         let user = await firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
-
+        user.user.sendEmailVerification()
         let result = await firebase.firestore().collection('Users').doc(user.user.uid).set({
           fullName: payload.fullName,
           studentId: payload.studentId,

@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
+import firebase from 'firebase'
 
 Vue.use(Router)
 
-export default new Router({
+const router =  new Router({
   routes: [
     {
       path: '/',
@@ -34,17 +34,26 @@ export default new Router({
     {
       path: '/mainscreen',
       name: 'MainScreen',
-      component: () => import('./views/MainScreen.vue')
+      component: () => import('./views/MainScreen.vue'),
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/profile',
       name: 'Profile',
-      component: () => import('./views/Profile.vue')
+      component: () => import('./views/Profile.vue'),
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/selectlocker',
       name: 'SelectLocker',
-      component: () => import('./views/SelectLocker.vue')
+      component: () => import('./views/SelectLocker.vue'),
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/lcdmainscreen',
@@ -64,13 +73,26 @@ export default new Router({
     {
       path: '/selectlock',
       name: 'Selectlock',
-      component: () => import('./views/Selectlock.vue')
+      component: () => import('./views/Selectlock.vue'),
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/entercode',
       name: 'Entercode',
       component: () => import('./views/Entercode.vue')
     }
-
-  ]
+  ],
 })
+
+router.beforeEach((to, from, next) => {
+  const currentUser = firebase.auth().currentUser
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  
+  if(requiresAuth && !currentUser && to.path !== '/login') next('Login')
+  
+  else next()
+})
+
+export default router

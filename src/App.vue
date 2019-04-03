@@ -31,7 +31,7 @@
     </v-content>
     <v-footer dark height="auto">
     <v-card class="flex">
-      <v-card-actions class="grey darken-4 justify-center">
+      <v-card-actions class="blue-grey lighten-2 black--text justify-center">
         <strong>&copy;2018 — CPE RMUTT</strong>
       </v-card-actions>
     </v-card>  
