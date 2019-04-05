@@ -13,16 +13,13 @@
       <v-card max-width="45%"  color="rgb(0, 0, 0, 0.1)">
         <v-container fluid grid-list-md>
           <v-layout row wrap>
-            <v-flex xs4 v-for="n in keypad" :key="n.name">
+            <v-flex xs4 md4 v-for="n in keypad" :key="n.name">
               <v-btn block   @click="key_action(n.val)" v-if="n.icon"><v-icon>{{n.icon}}</v-icon></v-btn>
               <v-btn block   @click="key_action(n.val)" v-else>{{n.name}}</v-btn>
             </v-flex>
           </v-layout>
         </v-container>
       </v-card>
-    </v-layout>
-    <v-layout justify-end align-end>
-        <v-btn depressed class ="grey darken-1 white--text" >ลืมรหัสผ่าน</v-btn>
     </v-layout>
   </v-container>
 </template>

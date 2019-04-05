@@ -85,7 +85,7 @@ export default {
     },
     cancelLocker(name) {
       var batch = db.batch()
-      batch.update(db.collection('Locker').doc(name), {use: false, user: ''})
+      batch.update(db.collection('Locker').doc(name), {use: false, user: '', Lock: true})
       batch.update(db.collection('Users').doc(auth.currentUser.uid), {locker: ''})
 
       try {
