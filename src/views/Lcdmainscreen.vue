@@ -10,15 +10,15 @@
             </v-flex>
             <v-flex xs6>
                 <v-layout wrap class="py-0">
-                    <v-flex v-for="locker in lockers" :key="locker.name" xs4 class="py-0">
+                    <v-flex v-for="locker in lockers" :key="locker.name" xs4 class="py-3">
                         <v-chip v-if="locker.lock" color="red" label>
-                            <v-icon left v-show="locker.isLock">lock</v-icon>
-                            <v-icon left v-show="!locker.isLock">lock_open</v-icon>
+                            <v-icon large left v-show="locker.isLock">lock</v-icon>
+                            <v-icon large left v-show="!locker.isLock">lock_open</v-icon>
                             <span>{{locker.name}}</span>
                         </v-chip>
                         <v-chip v-else label color="green">
-                            <v-icon left v-show="locker.isLock">lock</v-icon>
-                            <v-icon left v-show="!locker.isLock">lock_open</v-icon>
+                            <v-icon large left v-show="locker.isLock">lock</v-icon>
+                            <v-icon large left v-show="!locker.isLock">lock_open</v-icon>
                             <span>{{locker.name}}</span>
                         </v-chip>
                     </v-flex>
